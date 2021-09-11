@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import data from "../../data.json";
-import Logbook from "../Logbook/Logbook";
 import Options from "../Options/Options";
+import Logbook from "../Logbook/Logbook";
 
 export default class Story extends Component {
   constructor(props) {
@@ -13,13 +13,12 @@ export default class Story extends Component {
       currentFragment: {},
       currentOptions: {},
       previousSelection: "",
-      userStory: [],
-      hide: false
+      userStory: []
     };
     this.handleOptions = this.handleOptions.bind(this);
   }
 
-  //ciclo de vida>no llegué a investigar alternativas u otros métodos
+  //ciclo de vida>investigué alternativas u otros métodos pero no tuve tiempo suficiente para aprender a implementarlos
   componentDidMount() {
     this.setState({
       id: data.filter(
@@ -34,17 +33,17 @@ export default class Story extends Component {
     });
   }
 
-  //función para setear estado a partir de estado previo
+  //función para setear estado a partir de estado previo, según sugiere la documentación
   nextId = (letter) => {
     this.setState((state) => {
       return {
-        id: state.counter + 1 + letter,
-        nextId: state.counter + 1 + letter
+        id: this.state.counter + 1 + letter,
+        nextId: this.state.counter + 1 + letter
       };
     });
   };
 
-  //incrementar contador
+  //incrementar contador (ídem)
   incrementCounter = () => {
     this.setState((state) => {
       return {
@@ -53,15 +52,15 @@ export default class Story extends Component {
     });
   };
 
-  //handler de opciones que actualiza el estado
+  //handler de opciones que actualiza el y dispara el renderizado
   handleOptions = (selected) => {
     selected === "A" ? this.nextId("a") : this.nextId("b");
+    //La primer parte del if es código para próximas iteraciones con un botón de reinicio
     if (this.state.counter === 5) {
       this.setState((state) => {
         return {
           counter: 1,
-          id: 1,
-          hide: true
+          id: 1
         };
       });
     } else {
@@ -79,6 +78,7 @@ export default class Story extends Component {
   };
 
   render() {
+    //para evitar inconsistencias de renderizado/actualización
     const fragment =
       this.state.id == this.state.currentFragment.id
         ? this.state.currentFragment
@@ -86,22 +86,31 @@ export default class Story extends Component {
 
     return (
       <div className="layout">
-        {this.state.counter == 5 ? (
-          <h1 className="historia ">THE END ¡GRACIAS POR JUGAR!</h1>
-        ) : null}
-        <h1 className={"historia " + (this.state.hide ? "hidden" : "")}>
-          {fragment.historia}
-        </h1>
-        <Options
-          handleOptions={this.handleOptions}
-          options={this.state.currentOptions}
-          hide={this.state.hide}
-        />
-        <Logbook
-          previousSelection={this.state.previousSelection}
-          userStory={this.state.userStory}
-          hide={this.state.hide}
-        />
+        {this.state.nextId === "6a" || this.state.nextId === "6b" ? (
+          <>
+            <h1 className="historia">
+              THE END
+              <br />
+              ¡GRACIAS POR JUGAR!
+            </h1>
+            <p className="opciones">
+              Acá iría un botón para volver a jugar, pero por ahora, actualiza
+              la página para eso... ¡Gracias!
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="historia">{fragment.historia}</h1>
+            <Options
+              handleOptions={this.handleOptions}
+              options={this.state.currentOptions}
+            />
+            <Logbook
+              previousSelection={this.state.previousSelection}
+              userStory={this.state.userStory}
+            />
+          </>
+        )}
       </div>
     );
   }
