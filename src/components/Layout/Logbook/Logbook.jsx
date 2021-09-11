@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 export default function Logbook(props) {
   const { previousSelection, userStory } = props;
@@ -9,7 +9,7 @@ export default function Logbook(props) {
       <h4>Historial de opciones elegidas: </h4>
       <ul>
         {userStory.map((option, index) => (
-          <li key={index + option + index++}>{option}</li>
+          <li key={index + new Date().getTime}>{option}</li>
         ))}
       </ul>
     </div>
